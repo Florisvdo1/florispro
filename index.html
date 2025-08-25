@@ -1,321 +1,104 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Floris Pro — Conversational AI</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a0a0a" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="description" content="Floris Pro: hyper‑realistic bilingual (EN/NL) conversational AI with a luxury black marble interface." />
-
-  <!--
-    IMPORTANT:
-    1) In ElevenLabs, add to Allowed Origins:
-       https://florisvdo1.github.io  (and path /florispro/)
-    2) Agent ID is embedded below. Replace if needed.
-  -->
-
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>OEVER.ART – AGENT: FLORIS</title>
   <style>
-    /* ========== RESET & BASE ==========? */
-    *,*::before,*::after { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      background: #000; color: #f5f5f7;
-      overflow: hidden; /* lock scrolling — one-page app */
-      -webkit-tap-highlight-color: transparent;
+    :root{
+      --bg-1:#07090c; --bg-2:#0b1119; --bg-3:#0f1622;
+      --ink:#f5f7fb; --muted:#b8c1d6; --line:#1a2130;
     }
+    html,body{height:100%;background:#000;}
+    body{margin:0;color:var(--ink);
+      font-family:ui-sans-serif,system-ui,-apple-system,"Inter","SF Pro Display",Segoe UI,Roboto,Helvetica,Arial;
+      -webkit-font-smoothing:antialiased;overflow:hidden;}
 
-    /* ========== LUXE BLACK MARBLE BACKGROUND ========== */
-    /* Base black + soft bloom lights */
-    .bg {
-      position: fixed; inset: 0; z-index: -3;
-      background:
-        radial-gradient(1200px 800px at 20% 30%, rgba(255,255,255,0.06), transparent 60%),
-        radial-gradient(900px 700px at 80% 70%, rgba(255,255,255,0.05), transparent 60%),
-        #050505;
-      filter: saturate(110%);
-      overflow: hidden;
-    }
-    /* Subtle animated white "veins" using conic/repeating gradients + blur */
-    .bg::before, .bg::after {
-      content: "";
-      position: absolute; inset: -10%;
-      pointer-events: none;
-      mix-blend-mode: screen;
-    }
-    .bg::before {
-      background:
-        repeating-conic-gradient(from 0deg at 50% 50%,
-          rgba(255,255,255,0.06) 0deg 2deg,
-          rgba(0,0,0,0) 2deg 10deg);
-      opacity: 0.18;
-      filter: blur(12px) contrast(120%);
-      animation: spin 80s linear infinite;
-    }
-    .bg::after {
-      background:
-        radial-gradient(1000px 600px at 30% 40%, rgba(255,255,255,0.05), transparent 60%),
-        radial-gradient(1000px 600px at 70% 60%, rgba(255,255,255,0.04), transparent 60%),
-        repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0 1px, rgba(255,255,255,0.0) 1px 6px);
-      opacity: 0.12;
-      filter: blur(10px);
-      animation: float 26s ease-in-out infinite alternate;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes float {
-      0%   { transform: translate3d(-2%, -2%, 0) scale(1.02) }
-      100% { transform: translate3d( 2%,  2%, 0) scale(1.05) }
-    }
+    /* Animated background */
+    .bg{position:fixed;inset:0;z-index:-1;
+      background:radial-gradient(1200px 800px at 50% 120%,var(--bg-3)0%,var(--bg-2)45%,var(--bg-1)100%);}
+    .bg::before,.bg::after{
+      content:"";position:absolute;inset:-20%;filter:blur(40px);opacity:.75;mix-blend-mode:screen;
+      background:conic-gradient(from 0deg,rgba(80,140,255,.12),transparent 30%,rgba(80,140,255,.12) 60%,transparent 90%);
+      animation:spin 24s linear infinite;}
+    .bg::after{animation:spin 48s linear infinite reverse;opacity:.5;}
+    @keyframes spin{to{transform:rotate(360deg);}}
 
-    /* ========== LAYOUT ========== */
-    .wrap {
-      position: relative; inset: 0;
-      width: 100vw; height: 100dvh; /* mobile-safe viewport */
-      display: grid; grid-template-rows: auto 1fr auto;
-      gap: 0;
-    }
-    header, footer {
-      padding: clamp(12px, 2.5vmin, 24px);
-      display: flex; align-items: center; justify-content: space-between;
-      backdrop-filter: blur(6px);
-      background: linear-gradient(to bottom, rgba(10,10,10,0.65), rgba(10,10,10,0.25));
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    footer { border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 0; }
+    /* Portrait-only guard */
+    .rotate-guard{position:fixed;inset:0;display:none;place-items:center;z-index:50;background:#07090c;}
+    .guard-card{background:linear-gradient(180deg,#0b0f18,#0a0e15);border:1px solid var(--line);
+      border-radius:20px;padding:24px;max-width:520px;box-shadow:0 6px 40px rgba(0,0,0,.5);
+      text-align:center;color:var(--muted);}
+    .guard-card h2{color:var(--ink);}
+    @media(orientation:landscape){.rotate-guard{display:grid;}}
 
-    .brand {
-      display: flex; align-items: center; gap: 12px;
-      font-weight: 700; letter-spacing: .02em; font-size: clamp(18px, 2.2vmin, 22px);
-    }
-    .badge {
-      padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
-      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16);
-    }
+    /* Layout */
+    .page{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:18px 18px 22px;}
+    .header{display:flex;justify-content:center;align-items:flex-start;height:calc(100svh - 120px);}
 
-    .hero {
-      display: grid; place-items: center;
-      padding: clamp(16px, 3vmin, 32px);
-      text-align: center;
-    }
-    .panel {
-      width: min(900px, 92vw);
-      background: rgba(10,10,10,0.55);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
-      backdrop-filter: blur(8px);
-      padding: clamp(18px, 3.2vmin, 28px);
-    }
-    .title {
-      font-size: clamp(24px, 4.8vmin, 44px);
-      line-height: 1.08;
-      margin: 0 0 6px 0;
-    }
-    .subtitle {
-      margin: 0 0 18px 0; opacity: .85; font-size: clamp(14px, 2.4vmin, 18px);
-    }
+    /* Agent container */
+    .agent-wrap{
+      width:min(92svw,720px);aspect-ratio:1/1;position:relative;display:grid;place-items:center;overflow:hidden;isolation:isolate;
+      background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+      border-radius:16px;border:1px solid rgba(255,255,255,.08);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 10px 30px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.03);}
+    .agent-wrap::after{content:"";position:absolute;inset:-2px;border-radius:18px;z-index:-1;
+      background:conic-gradient(from 180deg at 50% 50%,rgba(122,166,255,.22),rgba(126,245,200,.12),rgba(122,166,255,.22));
+      filter:blur(14px);opacity:.7;animation:halo 8s ease-in-out infinite;}
+    @keyframes halo{0%,100%{transform:rotate(0)scale(1);opacity:.55;}50%{transform:rotate(180deg)scale(1.02);opacity:.85;}}
 
-    .controls {
-      display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
-      margin-top: 12px;
-    }
-    .btn {
-      -webkit-appearance: none; appearance: none;
-      padding: 14px 18px; border-radius: 12px; font-weight: 700;
-      border: 1px solid rgba(255,255,255,0.16);
-      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
-      color: #fff;
-      cursor: pointer;
-      transition: transform .15s ease, box-shadow .15s ease, background .2s ease;
-      text-transform: none; letter-spacing: .01em;
-    }
-    .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,0.35); }
-    .btn:active { transform: translateY(0); }
-    .btn.primary {
-      background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06));
-      border: 1px solid rgba(255,255,255,0.25);
-    }
-
-    .lang-toggle {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16);
-      border-radius: 999px; padding: 8px;
-    }
-    .lang-toggle button {
-      background: transparent; border: 0; color: #fff;
-      padding: 8px 12px; border-radius: 999px; font-weight: 700; cursor: pointer;
-      opacity: .8;
-    }
-    .lang-toggle button.active {
-      background: rgba(255,255,255,0.18);
-      border: 1px solid rgba(255,255,255,0.25);
-      opacity: 1;
-    }
-
-    .note {
-      margin-top: 14px; font-size: 12px; opacity: .75;
-    }
-
-    /* Position the widget container hint area (if needed) */
-    .widget-hint {
-      margin-top: 16px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.14);
-      font-size: 13px;
-    }
+    elevenlabs-convai{display:block;width:100%;height:100%;}
 
     /* Footer */
-    .footlinks { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-    .footlinks a { color: #e5e5e7; text-decoration: none; opacity: .85; }
-    .footlinks a:hover { opacity: 1; text-decoration: underline; }
-
-    /* Safe areas on iOS notch devices */
-    .pad {
-      padding-left: env(safe-area-inset-left);
-      padding-right: env(safe-area-inset-right);
-    }
-
-    /* Hide scrollbars if any (desktop) */
-    ::-webkit-scrollbar { width: 0; height: 0; }
+    .footer{display:flex;justify-content:center;align-items:center;height:84px;}
+    .logo{font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:min(6.2svw,28px);
+      position:relative;padding:8px 14px;border-radius:12px;color:#fff;
+      background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 4px 14px rgba(0,0,0,.35);overflow:hidden;}
+    .logo::before{content:"";position:absolute;inset:-20%;transform:skewX(-18deg)translateX(-120%);
+      background:linear-gradient(90deg,rgba(255,255,255,0)0%,rgba(255,255,255,.8)50%,rgba(255,255,255,0)100%);
+      mix-blend-mode:overlay;filter:blur(6px);animation:shine 2.6s linear infinite;}
+    @keyframes shine{to{transform:skewX(-18deg)translateX(220%);}}
+    .logo .brand{background:linear-gradient(180deg,#fff,#e7ecff);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 26px rgba(122,166,255,.25);}
+    .logo .sep{opacity:.6;padding:0 .4ch;}
+    .logo .agent{background:linear-gradient(180deg,#fff,#d7ffee);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 22px rgba(126,245,200,.18);}
   </style>
 </head>
 <body>
-  <div class="bg" aria-hidden="true"></div>
+  <div class="bg"></div>
+  <div class="rotate-guard"><div class="guard-card"><h2>Portrait Mode Required</h2><p>Please rotate your device.</p></div></div>
 
-  <div class="wrap">
-    <header class="pad">
-      <div class="brand">
-        <!-- Simple “F” monogram -->
-        <svg width="26" height="26" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <rect x="2" y="2" width="28" height="28" rx="8" fill="url(#g)"/>
-          <defs>
-            <linearGradient id="g" x1="2" y1="2" x2="30" y2="30" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#1b1b1b"/><stop offset="1" stop-color="#000"/>
-            </linearGradient>
-          </defs>
-        </svg>
-        Floris&nbsp;Pro
-        <span class="badge">Live Agent</span>
-      </div>
-      <div class="lang-toggle" role="group" aria-label="Language">
-        <button id="lang-en" class="active" data-lang="en" aria-pressed="true">EN</button>
-        <button id="lang-nl" data-lang="nl" aria-pressed="false">NL</button>
-      </div>
+  <main class="page">
+    <header class="header">
+      <section class="agent-wrap">
+        <!-- Your ElevenLabs Agent -->
+        <elevenlabs-convai agent-id="agent_9601k3gnh4pteprvqkx73341q29n" variant="expanded"></elevenlabs-convai>
+      </section>
     </header>
-
-    <main class="hero pad" id="hero">
-      <div class="panel">
-        <h1 class="title">Your Hyper‑Real Floris Clone</h1>
-        <p class="subtitle">Bilingual (English/Dutch), emotionally expressive, and ready to help — embedded with ElevenLabs.</p>
-
-        <div class="controls">
-          <button id="enter" class="btn primary">Enter Experience &amp; Lock Portrait</button>
-          <button id="start-chat" class="btn">Open Assistant</button>
-        </div>
-
-        <div class="widget-hint">
-          <strong>Tip:</strong> If the chat bubble isn’t visible, click <em>Open Assistant</em>.
-          For best results on iOS/Android, tap <em>Enter Experience</em> to go fullscreen and lock portrait.
-        </div>
-
-        <p class="note">
-          Host: <code>https://florisvdo1.github.io/florispro/</code> — make sure this is in your ElevenLabs <em>Allowed Origins</em>.
-        </p>
-      </div>
-    </main>
-
-    <footer class="pad">
-      <div class="footlinks">
-        <span>© <span id="yr"></span> Floris Pro</span>
-        <a href="https://florisvdo1.github.io/florispro/" target="_blank" rel="noopener">Project Home</a>
-        <a href="#" id="privacy">Privacy</a>
-      </div>
-      <div class="footlinks">
-        <span>Portrait mode is enforced where supported.</span>
-      </div>
+    <footer class="footer">
+      <div class="logo"><span class="brand">OEVER.ART</span><span class="sep">—</span><span class="agent">AGENT: FLORIS</span></div>
     </footer>
-  </div>
+  </main>
 
-  <!-- ElevenLabs Convai Widget (official embed) -->
-  <elevenlabs-convai agent-id="agent_3301k36g37zgftrta5mxxrm1xqdw"></elevenlabs-convai>
+  <!-- Load widget library -->
   <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
 
   <script>
-    // ===== Year stamp
-    document.getElementById('yr').textContent = new Date().getFullYear();
-
-    // ===== Language toggle (sets document language & a hint for conversation)
-    const langButtons = document.querySelectorAll('.lang-toggle button');
-    function setLang(lang) {
-      document.documentElement.lang = lang === 'nl' ? 'nl' : 'en';
-      langButtons.forEach(b => {
-        const active = b.dataset.lang === lang;
-        b.classList.toggle('active', active);
-        b.setAttribute('aria-pressed', active ? 'true' : 'false');
-      });
-      // Optional: provide a visual cue for the selected language
-      const hero = document.getElementById('hero');
-      hero.querySelector('.subtitle').textContent =
-        lang === 'nl'
-          ? 'Tweetalig (Nederlands/Engels), emotioneel expressief en klaar om te helpen — ingebed met ElevenLabs.'
-          : 'Bilingual (English/Dutch), emotionally expressive, and ready to help — embedded with ElevenLabs.';
-    }
-    document.getElementById('lang-en').addEventListener('click', () => setLang('en'));
-    document.getElementById('lang-nl').addEventListener('click', () => setLang('nl'));
-
-    // ===== Fullscreen + Portrait lock (best effort — requires user gesture)
-    async function enterExperience() {
-      const el = document.documentElement;
-      try {
-        if (!document.fullscreenElement && el.requestFullscreen) {
-          await el.requestFullscreen({ navigationUI: "hide" });
-        }
-      } catch (e) { /* no-op */ }
-
-      // Orientation lock works only in PWA/installed/fullscreen contexts on many devices
-      try {
-        if (screen.orientation && screen.orientation.lock) {
-          await screen.orientation.lock('portrait');
-        }
-      } catch (e) { /* silently ignore unsupported */ }
-
-      // Minor scroll to hide URL bar on some mobile browsers
-      setTimeout(() => window.scrollTo(0, 1), 50);
-    }
-    document.getElementById('enter').addEventListener('click', enterExperience, { passive: true });
-
-    // ===== Open the assistant programmatically (depends on widget behavior)
-    // The ElevenLabs <elevenlabs-convai> custom element typically renders a floating bubble.
-    // If the library exposes an API in future, you can hook it here.
-    document.getElementById('start-chat').addEventListener('click', () => {
-      // Attempt to focus the widget element to hint user interaction:
-      const el = document.querySelector('elevenlabs-convai');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        // Some widget builds respond to a click; we simulate one:
-        try { el.click(); } catch (e) {}
-      }
-    });
-
-    // ===== Privacy modal (very light, inline)
-    document.getElementById('privacy').addEventListener('click', (e) => {
-      e.preventDefault();
-      alert(
-`Privacy & Data Notice
-— This demo page embeds the ElevenLabs Conversational AI widget.
-— Audio and text you provide may be processed by ElevenLabs to run the agent.
-— Do not share sensitive information.
-— Host: florisvdo1.github.io/florispro/`
-      );
-    });
-
-    // Default language to EN; user can switch to NL
-    setLang('en');
+    // Optional: try boosting audio volume via WebAudio
+    window.addEventListener('pointerdown',()=>{
+      const convai=document.querySelector('elevenlabs-convai');
+      const AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC||!convai.shadowRoot)return;
+      const media=convai.shadowRoot.querySelector('audio,video');
+      if(!media)return;
+      const ctx=new AC();
+      const src=ctx.createMediaElementSource(media);
+      const gain=ctx.createGain();
+      gain.gain.value=2.0;
+      src.connect(gain).connect(ctx.destination);
+      media.volume=1.0;
+    },{once:true});
   </script>
 </body>
 </html>
