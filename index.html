@@ -5,60 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>OEVER.ART – AGENT: FLORIS</title>
   <style>
-    :root{
-      --bg-1:#07090c; --bg-2:#0b1119; --bg-3:#0f1622;
-      --ink:#f5f7fb; --muted:#b8c1d6; --line:#1a2130;
-    }
+    :root{--bg-1:#07090c;--bg-2:#0b1119;--bg-3:#0f1622;--ink:#f5f7fb;--muted:#b8c1d6;--line:#1a2130;}
     html,body{height:100%;background:#000;}
-    body{margin:0;color:var(--ink);
-      font-family:ui-sans-serif,system-ui,-apple-system,"Inter","SF Pro Display",Segoe UI,Roboto,Helvetica,Arial;
-      -webkit-font-smoothing:antialiased;overflow:hidden;}
-
-    /* Animated background */
-    .bg{position:fixed;inset:0;z-index:-1;
-      background:radial-gradient(1200px 800px at 50% 120%,var(--bg-3)0%,var(--bg-2)45%,var(--bg-1)100%);}
-    .bg::before,.bg::after{
-      content:"";position:absolute;inset:-20%;filter:blur(40px);opacity:.75;mix-blend-mode:screen;
-      background:conic-gradient(from 0deg,rgba(80,140,255,.12),transparent 30%,rgba(80,140,255,.12) 60%,transparent 90%);
-      animation:spin 24s linear infinite;}
+    body{margin:0;color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"Inter","SF Pro Display",Segoe UI,Roboto,Helvetica,Arial;-webkit-font-smoothing:antialiased;overflow:hidden;}
+    .bg{position:fixed;inset:0;z-index:-1;background:radial-gradient(1200px 800px at 50% 120%,var(--bg-3)0%,var(--bg-2)45%,var(--bg-1)100%);}
+    .bg::before,.bg::after{content:"";position:absolute;inset:-20%;filter:blur(40px);opacity:.75;mix-blend-mode:screen;background:conic-gradient(from 0deg,rgba(80,140,255,.12),transparent 30%,rgba(80,140,255,.12) 60%,transparent 90%);animation:spin 24s linear infinite;}
     .bg::after{animation:spin 48s linear infinite reverse;opacity:.5;}
     @keyframes spin{to{transform:rotate(360deg);}}
-
-    /* Portrait-only guard */
     .rotate-guard{position:fixed;inset:0;display:none;place-items:center;z-index:50;background:#07090c;}
-    .guard-card{background:linear-gradient(180deg,#0b0f18,#0a0e15);border:1px solid var(--line);
-      border-radius:20px;padding:24px;max-width:520px;box-shadow:0 6px 40px rgba(0,0,0,.5);
-      text-align:center;color:var(--muted);}
+    .guard-card{background:linear-gradient(180deg,#0b0f18,#0a0e15);border:1px solid var(--line);border-radius:20px;padding:24px;max-width:520px;box-shadow:0 6px 40px rgba(0,0,0,.5);text-align:center;color:var(--muted);}
     .guard-card h2{color:var(--ink);}
     @media(orientation:landscape){.rotate-guard{display:grid;}}
-
-    /* Layout */
     .page{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:18px 18px 22px;}
     .header{display:flex;justify-content:center;align-items:flex-start;height:calc(100svh - 120px);}
-
-    /* Agent container */
-    .agent-wrap{
-      width:min(92svw,720px);aspect-ratio:1/1;position:relative;display:grid;place-items:center;overflow:hidden;isolation:isolate;
-      background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
-      border-radius:16px;border:1px solid rgba(255,255,255,.08);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 10px 30px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.03);}
-    .agent-wrap::after{content:"";position:absolute;inset:-2px;border-radius:18px;z-index:-1;
-      background:conic-gradient(from 180deg at 50% 50%,rgba(122,166,255,.22),rgba(126,245,200,.12),rgba(122,166,255,.22));
-      filter:blur(14px);opacity:.7;animation:halo 8s ease-in-out infinite;}
+    .agent-wrap{width:min(92svw,720px);aspect-ratio:1/1;position:relative;display:grid;place-items:center;overflow:hidden;isolation:isolate;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border-radius:16px;border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 10px 30px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.03);}
+    .agent-wrap::after{content:"";position:absolute;inset:-2px;border-radius:18px;z-index:-1;background:conic-gradient(from 180deg at 50% 50%,rgba(122,166,255,.22),rgba(126,245,200,.12),rgba(122,166,255,.22));filter:blur(14px);opacity:.7;animation:halo 8s ease-in-out infinite;}
     @keyframes halo{0%,100%{transform:rotate(0)scale(1);opacity:.55;}50%{transform:rotate(180deg)scale(1.02);opacity:.85;}}
-
     elevenlabs-convai{display:block;width:100%;height:100%;}
-
-    /* Footer */
     .footer{display:flex;justify-content:center;align-items:center;height:84px;}
-    .logo{font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:min(6.2svw,28px);
-      position:relative;padding:8px 14px;border-radius:12px;color:#fff;
-      background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.03));
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 4px 14px rgba(0,0,0,.35);overflow:hidden;}
-    .logo::before{content:"";position:absolute;inset:-20%;transform:skewX(-18deg)translateX(-120%);
-      background:linear-gradient(90deg,rgba(255,255,255,0)0%,rgba(255,255,255,.8)50%,rgba(255,255,255,0)100%);
-      mix-blend-mode:overlay;filter:blur(6px);animation:shine 2.6s linear infinite;}
+    .logo{font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:min(6.2svw,28px);position:relative;padding:8px 14px;border-radius:12px;color:#fff;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 4px 14px rgba(0,0,0,.35);overflow:hidden;}
+    .logo::before{content:"";position:absolute;inset:-20%;transform:skewX(-18deg)translateX(-120%);background:linear-gradient(90deg,rgba(255,255,255,0)0%,rgba(255,255,255,.8)50%,rgba(255,255,255,0)100%);mix-blend-mode:overlay;filter:blur(6px);animation:shine 2.6s linear infinite;}
     @keyframes shine{to{transform:skewX(-18deg)translateX(220%);}}
     .logo .brand{background:linear-gradient(180deg,#fff,#e7ecff);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 26px rgba(122,166,255,.25);}
     .logo .sep{opacity:.6;padding:0 .4ch;}
@@ -68,11 +34,9 @@
 <body>
   <div class="bg"></div>
   <div class="rotate-guard"><div class="guard-card"><h2>Portrait Mode Required</h2><p>Please rotate your device.</p></div></div>
-
   <main class="page">
     <header class="header">
       <section class="agent-wrap">
-        <!-- Your ElevenLabs Agent -->
         <elevenlabs-convai agent-id="agent_9601k3gnh4pteprvqkx73341q29n" variant="expanded"></elevenlabs-convai>
       </section>
     </header>
@@ -80,12 +44,8 @@
       <div class="logo"><span class="brand">OEVER.ART</span><span class="sep">—</span><span class="agent">AGENT: FLORIS</span></div>
     </footer>
   </main>
-
-  <!-- Load widget library -->
   <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
-
   <script>
-    // Optional: try boosting audio volume via WebAudio
     window.addEventListener('pointerdown',()=>{
       const convai=document.querySelector('elevenlabs-convai');
       const AC=window.AudioContext||window.webkitAudioContext;
